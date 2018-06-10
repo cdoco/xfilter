@@ -1,3 +1,4 @@
+[![Build Status][travis-image]][travis-url]
 ![xfilter](https://img.shields.io/badge/branch-master-brightgreen.svg?style=flat-square)
 
 > 关键词过滤扩展，用于检查一段文本中是否出现敏感词，基于 `Double-Array Trie` 树实现。
@@ -187,3 +188,6 @@ foreach ($rs as $v) {
 ## License
 
 PHP License. See the [LICENSE](LICENSE) file.
+
+[travis-url]: https://travis-ci.org/cdoco/xfilter
+[travis-image]: https://travis-ci.org/cdoco/xfilter.svg
