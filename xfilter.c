@@ -158,7 +158,7 @@ PHP_METHOD(xfilter, save)
         return;
     }
 
-	/* Init */
+    /* Init */
     if (!append) {
         XFILTER_G(trie) = xfilter_trie_new_ex();
     }
