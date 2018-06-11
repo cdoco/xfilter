@@ -1,5 +1,5 @@
 --TEST--
-Check for xfilter __construct
+Check for xfilter setFileName
 --SKIPIF--
 <?php if (!extension_loaded("xfilter")) print "skip"; ?>
 --FILE--

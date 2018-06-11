@@ -90,7 +90,7 @@ static int xfilter_search(Trie *trie, const AlphaChar *text, zval *data)
     return SUCCESS;
 }
 
-/* Trie new ex */
+/* Trie new alpha */
 static Trie *xfilter_trie_new_alpha()
 {
     Trie *trie;
@@ -139,7 +139,7 @@ static int xfilter_trie_new()
     return 0;
 }
 
-/* Construct. */
+/* SetFileName function */
 PHP_METHOD(xfilter, setFileName)
 {
     zend_string *filename = NULL;
