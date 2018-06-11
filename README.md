@@ -196,6 +196,10 @@ boolean Filter::delete(string $keyword);
 Filter::delete('高子航');
 ```
 
+## 感谢
+
+@wulijun 的 `trie-filter` 扩展已不维护更新, 目前使用起来有点繁琐。这个项目是根据自己的想法, 在 [trie-filter](https://github.com/wulijun/php-ext-trie-filter) 的基础上修改而来, 感谢 @wulijun。
+
 ## License
 
 PHP License. See the [LICENSE](LICENSE) file.
