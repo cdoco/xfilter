@@ -172,6 +172,10 @@ Array
 
 )
 
+<?php
+
+use Cdoco\Filter;
+
 // 截取字符串
 $content = '这是一个敏感词测试语句, 由高子航创造, xfilter, By ZiHang Gao。';
 $rs = Filter::search($content);
