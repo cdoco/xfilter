@@ -6,10 +6,7 @@ Check for xfilter __construct
 <?php 
 use Cdoco\Filter;
 
-$fr = new Filter(__DIR__ . '/blackword.dic');
-print_r($fr);
+var_dump(Filter::setFileName(__DIR__ . '/blackword.dic'));
 ?>
 --EXPECT--
-Cdoco\Filter Object
-(
-)
+bool(true)

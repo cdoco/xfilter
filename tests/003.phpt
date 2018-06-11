@@ -6,13 +6,13 @@ Check for xfilter save and search
 <?php 
 use Cdoco\Filter;
 
-$fr = new Filter(__DIR__ . '/blackword.dic');
+Filter::setFileName(__DIR__ . '/blackword.dic');
 
 // save
-$fr->save(['敏感词', '高子航', 'xfilter']);
+Filter::save(['敏感词', '高子航', 'xfilter']);
 
 // search
-$rs = $fr->search('这是一个敏感词测试语句, 由高子航创造, xfilter, By ZiHang Gao。');
+$rs = Filter::search('这是一个敏感词测试语句, 由高子航创造, xfilter, By ZiHang Gao。');
 
 print_r($rs);
 ?>

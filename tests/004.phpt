@@ -6,22 +6,22 @@ Check for xfilter save append parameter
 <?php 
 use Cdoco\Filter;
 
-$fr = new Filter(__DIR__ . '/blackword.dic');
+Filter::setFileName(__DIR__ . '/blackword.dic');
 
-$fr->save(['xfilter']);
-$rs = $fr->search('xfilter, By ZiHang Gao。');
+Filter::save(['xfilter']);
+$rs = Filter::search('xfilter, By ZiHang Gao。');
 
 print_r($rs);
 
 // 不设置 $append 参数 save 方法会重新建立一个文件
-$fr->save(['cdoco']);
-$rs = $fr->search('xfilter, By ZiHang Gao。');
+Filter::save(['cdoco']);
+$rs = Filter::search('xfilter, By ZiHang Gao。');
 
 print_r($rs);
 
 // 如果设置了 $append 为 true, save 方法会在之前字典的基础上追加敏感词
-$fr->save(['xfilter'], true);
-$rs = $fr->search('cdoco, By ZiHang Gao。');
+Filter::save(['xfilter'], true);
+$rs = Filter::search('cdoco, By ZiHang Gao。');
 
 print_r($rs);
 ?>

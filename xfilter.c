@@ -31,6 +31,23 @@ zend_class_entry *xfilter_ce;
 
 ZEND_DECLARE_MODULE_GLOBALS(xfilter)
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_xfilter_file_name, 0, 0, 1)
+    ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 1)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_xfilter_save, 0, 0, 1)
+    ZEND_ARG_ARRAY_INFO(0, dirty_words, 1)
+    ZEND_ARG_TYPE_INFO(0, append, _IS_BOOL, 1)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_xfilter_search, 0, 0, 1)
+    ZEND_ARG_TYPE_INFO(0, text, IS_STRING, 1)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_xfilter_delete, 0, 0, 1)
+    ZEND_ARG_TYPE_INFO(0, keyword, IS_STRING, 1)
+ZEND_END_ARG_INFO()
+
 PHP_INI_BEGIN()
     STD_PHP_INI_ENTRY("xfilter.filename", NULL, PHP_INI_ALL, OnUpdateString, filename, zend_xfilter_globals, xfilter_globals)
 PHP_INI_END()
@@ -74,7 +91,7 @@ static int xfilter_search(Trie *trie, const AlphaChar *text, zval *data)
 }
 
 /* Trie new ex */
-static Trie *xfilter_trie_new_ex()
+static Trie *xfilter_trie_new_alpha()
 {
     Trie *trie;
     AlphaMap *alpha_map;
@@ -108,10 +125,10 @@ static int xfilter_trie_new()
     if (XFILTER_G(filename)) {
         trie = trie_new_from_file(XFILTER_G(filename));
         if (!trie) {
-            trie = xfilter_trie_new_ex();
+            trie = xfilter_trie_new_alpha();
         }
     } else {
-        trie = xfilter_trie_new_ex();
+        trie = xfilter_trie_new_alpha();
     }
 
     if (!trie) {
@@ -123,11 +140,11 @@ static int xfilter_trie_new()
 }
 
 /* Construct. */
-PHP_METHOD(xfilter, __construct)
+PHP_METHOD(xfilter, setFileName)
 {
     zend_string *filename = NULL;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "|S", &filename) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "S", &filename) == FAILURE) {
         return;
     }
 
@@ -160,7 +177,7 @@ PHP_METHOD(xfilter, save)
 
     /* Init */
     if (!append) {
-        XFILTER_G(trie) = xfilter_trie_new_ex();
+        XFILTER_G(trie) = xfilter_trie_new_alpha();
     }
 
     ZEND_HASH_FOREACH_NUM_KEY_VAL(Z_ARRVAL_P(dirty_words), i, value) {
@@ -216,11 +233,8 @@ PHP_METHOD(xfilter, search)
     }
 
     if (trie_is_dirty(XFILTER_G(trie))) {
-        XFILTER_G(trie) = trie_new_from_file(XFILTER_G(filename));
-        if (!XFILTER_G(trie)) {
-            php_error_docref(NULL, E_WARNING, "Unable to load %s", XFILTER_G(filename));
-            return;
-        }
+        php_error_docref(NULL, E_WARNING, "Unable to load %s", XFILTER_G(filename));
+        return;
     }
 
     array_init(return_value);
@@ -238,10 +252,47 @@ PHP_METHOD(xfilter, search)
     efree(alpha_text);
 }
 
+/* Delete function */
+PHP_METHOD(xfilter, delete)
+{
+    AlphaChar alpha_key[KEYWORD_MAX_LEN+1];
+    unsigned char *keyword = NULL, *p = NULL;
+    size_t keyword_len, i;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &keyword, &keyword_len) == FAILURE) {
+        return;
+    }
+
+    if (keyword_len > KEYWORD_MAX_LEN || keyword_len < 1) {
+        php_error_docref(NULL, E_WARNING, "keyword should has [1, %d] bytes", KEYWORD_MAX_LEN);
+        RETURN_FALSE;
+    }
+
+    p = keyword;
+    i = 0;
+    while (*p && *p != '\n' && *p != '\r') {
+        alpha_key[i++] = (AlphaChar)*p;
+        p++;
+    }
+    alpha_key[i] = TRIE_CHAR_TERM;
+
+    if (!trie_delete(XFILTER_G(trie), alpha_key)) {
+        RETURN_FALSE;
+    }
+
+    /* save file */
+    if (trie_save(XFILTER_G(trie), XFILTER_G(filename))) {
+        RETURN_FALSE;
+    }
+
+    RETURN_TRUE;
+}
+
 static const zend_function_entry xfilter_methods[] = {
-    PHP_ME(xfilter, __construct, NULL, ZEND_ACC_CTOR | ZEND_ACC_PUBLIC)
-    PHP_ME(xfilter, save, NULL, ZEND_ACC_PUBLIC)
-    PHP_ME(xfilter, search, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(xfilter, setFileName, arginfo_xfilter_file_name, ZEND_ACC_STATIC |  ZEND_ACC_PUBLIC)
+    PHP_ME(xfilter, save, arginfo_xfilter_save, ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+    PHP_ME(xfilter, search, arginfo_xfilter_search, ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+    PHP_ME(xfilter, delete, arginfo_xfilter_delete, ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
