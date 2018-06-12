@@ -83,7 +83,7 @@ print_r($rs);
 
 #### setFileName
 
-该方法方法, 可以传入一个敏感词的字典文件路径。
+该方法可以传入一个敏感词的字典文件路径。
 
 ```php
 Filter::setFileName(string $filename);
