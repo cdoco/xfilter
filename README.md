@@ -1,7 +1,7 @@
 [![Build Status][travis-image]][travis-url]
-![xfilter](https://img.shields.io/badge/branch-master-brightgreen.svg)
 ![libdatrie](https://img.shields.io/badge/libdatrie-%3E%3D0.2.4-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D7.0.0-blue.svg)
+![xfilter](https://img.shields.io/badge/branch-master-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-PHP/3.01-blue.svg)
 
 > 关键词过滤扩展，用于检查一段文本中是否出现敏感词，基于 `Double-Array Trie` 树实现。
