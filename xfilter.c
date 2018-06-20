@@ -329,6 +329,8 @@ PHP_MINFO_FUNCTION(xfilter)
 {
     php_info_print_table_start();
     php_info_print_table_header(2, "xfilter support", "enabled");
+    php_info_print_table_row(2, "Version", PHP_XFILTER_VERSION);
+    
     php_info_print_table_end();
 
     DISPLAY_INI_ENTRIES();

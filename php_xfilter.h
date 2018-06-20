@@ -27,17 +27,9 @@
 extern zend_module_entry xfilter_module_entry;
 #define phpext_xfilter_ptr &xfilter_module_entry
 
-#define PHP_XFILTER_VERSION "0.1.0" /* Replace with version number for your extension */
+#define PHP_XFILTER_VERSION "1.0.0-rc"
 
 #define KEYWORD_MAX_LEN 1024
-
-#ifdef PHP_WIN32
-#	define PHP_XFILTER_API __declspec(dllexport)
-#elif defined(__GNUC__) && __GNUC__ >= 4
-#	define PHP_XFILTER_API __attribute__ ((visibility("default")))
-#else
-#	define PHP_XFILTER_API
-#endif
 
 #ifdef ZTS
 #include "TSRM.h"
